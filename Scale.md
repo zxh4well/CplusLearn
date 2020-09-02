@@ -185,3 +185,55 @@ linearScale.invert(100);  // returns 10
 
 ### 二、连续输入离散输出型
 
+1、scaleQuantize（量化比例尺）
+
+scaleQuantize接受连续输入and输出由range定义的离散量。
+
+```js
+let quantizeScale = d3.scaleQuantize()
+  .domain([0, 100])
+  .range(['lightblue', 'orange', 'lightgreen', 'pink']);
+
+quantizeScale(10);   // returns 'lightblue'
+quantizeScale(30);  // returns 'orange'
+quantizeScale(90);  // returns 'pink'
+```
+
+- 0 ≤ *u* < 25 is mapped to ‘**lightblue**’
+- 25 ≤ *u* < 50 is mapped to ‘**orange**’
+- 50 ≤ *u* < 75 is mapped to ‘**lightgreen**’
+- 75 ≤ *u* < 100 is mapped to ‘**pink**’
+
+其中*u*是输入值，映射到domain中去。
+
+<img src="https://i.loli.net/2020/09/02/eYQ86Ho4MJCuPkn.png" alt="image-20200902185843259" style="zoom:80%;" />
+
+2、scaleQuantile（分位数比例尺）
+
+scaleQuantile将连续的数值映射到离散的值上去，domain由数字数组组成。
+
+```js
+let myData = [0, 5, 7, 10, 20, 30, 35, 40, 60, 62, 65, 70, 80, 90, 100];
+
+let quantileScale = d3.scaleQuantile()
+  .domain(myData)
+  .range(['lightblue', 'orange', 'lightgreen']);
+
+quantileScale(0);   // returns 'lightblue'
+quantileScale(20);  // returns 'lightblue'
+quantileScale(30);  // returns 'orange'
+quantileScale(65);  // returns 'lightgreen'
+```
+
+domain中的数组被平均分成*n*个组，n是range中值的个数。例如，在上面的例子中，domain中的数组并平均分成了三个组。
+
+- the first 5 values are mapped to ‘**lightblue**’
+- the next 5 values to ‘**orange**’ 
+- the last 5 values to ‘**lightgreen**’
+
+我们可以使用`.quantiles()`来访问domain中数组的分割点。
+
+```js
+quantileScale.quantiles();  // returns [26.66..., 63]
+```
+
